@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cómo se construyó · GamaLabs</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230a0b10'/><circle cx='50' cy='50' r='26' fill='none' stroke='%237c5cff' stroke-width='6'/><circle cx='50' cy='50' r='8' fill='%233ff2c6'/></svg>">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0b10;--panel:#13141d;--ink:#f3f2fa;--muted:#9a99ad;--faint:#5b5a6e;
+  --violet:#7c5cff;--aqua:#3ff2c6;--line:rgba(124,92,255,.15)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:"General Sans",system-ui,sans-serif;
+  line-height:1.75;padding:8vh clamp(20px,8vw,120px) 14vh;-webkit-font-smoothing:antialiased}
+main{max-width:780px;margin:0 auto}
+.mono{font-family:"JetBrains Mono",monospace}
+.grad{background:linear-gradient(100deg,var(--violet),var(--aqua));-webkit-background-clip:text;background-clip:text;color:transparent}
+.back{display:inline-block;margin-bottom:38px;color:var(--aqua);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;text-decoration:none}
+h1{font-size:clamp(2.2rem,6vw,3.4rem);font-weight:600;letter-spacing:-.02em;line-height:1.05}
+.sub{color:var(--violet);font-size:.74rem;letter-spacing:.28em;text-transform:uppercase;margin-bottom:12px}
+h2{font-size:1.4rem;font-weight:600;margin:46px 0 12px;color:var(--aqua)}
+p,li{color:rgba(243,242,250,.85);font-size:1rem}
+ul{padding-left:22px;margin:10px 0}li{margin:7px 0}
+code{background:rgba(124,92,255,.12);border:1px solid var(--line);border-radius:5px;padding:1px 7px;font-size:.85em;color:#c5b8ff;font-family:"JetBrains Mono",monospace}
+strong{color:var(--ink)}
+a{color:var(--aqua)}
+.rule{height:1px;background:var(--line);margin:40px 0}
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="../">← Volver a GamaLabs</a>
+  <p class="sub mono">Meta · el sitio que se explica a sí mismo</p>
+  <h1>Cómo se construyó <span class="grad">este</span> sitio</h1>
+  <p style="margin-top:18px">Este sitio es su propia prueba: lo planeó, diseñó y construyó IA con la skill <strong>Fábrica de Páginas Premium</strong> de GamaLabs — el mismo proceso con el que construimos el de nuestros clientes.</p>
+
+  <h2>El proceso, no solo el resultado</h2>
+  <p>Antes de escribir una línea de código: <strong>investigación de marca → Brand DNA → dirección creativa → PRD</strong>. Recién con el plan aprobado empezó el build.</p>
+  <ul>
+    <li><strong>Brand DNA:</strong> laboratorio de IA · arquetipo El Creador · tono seguro, futurista y cálido · promesa: "presencia digital construida y operada por IA, nivel agencia, renta mensual".</li>
+    <li><strong>Concepto:</strong> "el laboratorio que se muestra solo" — el sitio no promete, demuestra.</li>
+    <li><strong>Plan:</strong> 8 secciones, hero WebGL, y 7 técnicas del catálogo mapeadas a cada sección.</li>
+  </ul>
+
+  <h2>Las técnicas (una por sección, con intención)</h2>
+  <ul>
+    <li><strong>Hero:</strong> shader WebGL propio (fbm + domain warping) de energía violeta→aqua, reactivo al cursor, corriendo vivo al cargar. Título con efecto <em>scramble</em>.</li>
+    <li><strong>Portafolio vivo:</strong> galería <em>pin + scale</em> con <strong>capturas reales</strong> de 16 sitios que ya construimos — la prueba, no un render.</li>
+    <li><strong>Cómo funciona:</strong> un <em>beam</em> de luz que viaja por el pipeline Investiga→Diseña→Construye→Opera (gradiente SVG deslizante, no <code>stroke-dashoffset</code>).</li>
+    <li><strong>Capacidades:</strong> cards con borde de luz por acento + tilt 3D al mouse.</li>
+    <li><strong>Planes:</strong> precios con count-up. <strong>Resultados:</strong> contadores animados.</li>
+    <li><strong>Cierre:</strong> fondo de video cinemático de "energía de laboratorio".</li>
+  </ul>
+
+  <h2>Assets</h2>
+  <p>Todo lo figurativo es real o fotorreal (regla dura: nada de arte geométrico). El portafolio usa capturas reales de los sitios en vivo. El video del cierre lo generó <strong>Seedance 2.0</strong> (1080p, ambiente abstracto sin personas) — costo total de assets <code>~$1.68 USD</code>. El resto es matemática pura (shaders, canvas) sobre HTML/CSS/JS vanilla + GSAP.</p>
+
+  <div class="rule"></div>
+  <p class="mono" style="color:var(--faint);font-size:.82rem">Si este sitio te gustó, así construimos el tuyo. <a href="../#contacto">Agenda una demo →</a></p>
+</main>
+</body>
+</html>
