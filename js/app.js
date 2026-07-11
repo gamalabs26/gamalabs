@@ -119,7 +119,7 @@ addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40),
 /* ---------- reveals genéricos ---------- */
 (() => {
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '-8%' });
-  document.querySelectorAll('.sec-head,.pf-intro,.cap-card,.plan-card').forEach(el => { el.setAttribute('data-reveal', ''); io.observe(el); });
+  document.querySelectorAll('.sec-head,.pf-intro,.div-copy,.div-visual,.res-stat,.stack-pill,.eco-index a').forEach(el => { el.setAttribute('data-reveal', ''); io.observe(el); });
   // barrido inicial por si algo ya está en viewport
   requestAnimationFrame(() => document.querySelectorAll('[data-reveal]').forEach(el => { if (el.getBoundingClientRect().top < innerHeight * .92) el.classList.add('in'); }));
 })();
@@ -233,30 +233,24 @@ addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40),
   requestAnimationFrame(loop);
 })();
 
-/* ---------- PLANES: precios (placeholder) con count-up ---------- */
-/* montos por confirmar — placeholders MXN para aprobación */
-const PLAN_PRICES = { presencia: 2900, crecimiento: 6900, autopiloto: 12900 };
-
-/* ---------- counters + precios ---------- */
+/* ---------- counters (métricas + KPIs) ---------- */
 (() => {
-  function animateNum(el, to, suffix, money) {
+  function animateNum(el, to, suffix) {
     const dur = 1200, t0 = performance.now();
     (function step(now) {
-      const k = Math.min(1, (now - t0) / dur);
-      const e = 1 - Math.pow(1 - k, 3);
-      const val = Math.round(to * e);
-      el.textContent = (money ? val.toLocaleString('es-MX') : val) + (suffix || '');
+      const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = Math.round(to * e) + (suffix || '');
       if (k < 1) requestAnimationFrame(step);
     })(t0);
   }
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting) return; io.unobserve(e.target);
     const el = e.target;
-    if (el.dataset.plan) animateNum(el, PLAN_PRICES[el.dataset.plan], '', true);
-    else animateNum(el, +el.dataset.count, el.dataset.suffix || '', false);
-  }), { threshold: .6 });
-  document.querySelectorAll('[data-count],[data-plan]').forEach(el => {
-    if (reduce) { if (el.dataset.plan) el.textContent = PLAN_PRICES[el.dataset.plan].toLocaleString('es-MX'); else el.textContent = el.dataset.count + (el.dataset.suffix || ''); }
+    if (el.dataset.kpi) animateNum(el, +el.dataset.kpi, el.dataset.suf || '');
+    else animateNum(el, +el.dataset.count, el.dataset.suffix || '');
+  }), { threshold: .5 });
+  document.querySelectorAll('[data-count],[data-kpi]').forEach(el => {
+    if (reduce) el.textContent = (el.dataset.kpi || el.dataset.count) + (el.dataset.suf || el.dataset.suffix || '');
     else io.observe(el);
   });
 })();
@@ -278,4 +272,62 @@ const PLAN_PRICES = { presencia: 2900, crecimiento: 6900, autopiloto: 12900 };
   const sec = document.getElementById('contacto');
   new IntersectionObserver(es => { if (es[0].isIntersecting && !reduce) { v.play().catch(() => {}); } else v.pause(); }).observe(sec);
   v.addEventListener('error', () => v.style.display = 'none', { once: true });
+})();
+
+/* ---------- AGENTS: chat animado multicanal ---------- */
+(() => {
+  const body = document.getElementById('chatBody'), chEl = document.getElementById('chatCh');
+  if (!body) return;
+  const scenes = [
+    { ch: 'WhatsApp', msgs: [['in', 'Hola, ¿tienen lugar para hoy? 😊'], ['out', '¡Hola! 👋 Sí: 5:00 pm y 6:30 pm. ¿Cuál te acomoda?'], ['in', 'La de 6:30'], ['out', 'Listo, aparté las 6:30. ¿A qué nombre? 📅']] },
+    { ch: 'Instagram', msgs: [['in', '¿Cuánto cuesta el plan Pro?'], ['out', 'El Pro son $999 MXN/mes: 3 bots y 5,000 mensajes. ¿Te paso el link?'], ['in', 'Sí, porfa'], ['out', 'Aquí está 🔗 — cualquier duda sigo aquí, 24/7.']] },
+    { ch: 'Web', msgs: [['in', 'Necesito una cotización'], ['out', 'Claro. ¿Qué producto y qué cantidad? Te paso precio al instante 🤝'], ['in', '500 piezas del modelo A'], ['out', 'Perfecto, ya lo calculé y te lo envío por correo ✅']] },
+  ];
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const bubble = (cls, txt) => { const b = document.createElement('div'); b.className = 'bub ' + cls; b.textContent = txt; body.appendChild(b); while (body.children.length > 5) body.removeChild(body.firstChild); };
+  if (reduce) { chEl.textContent = scenes[0].ch; scenes[0].msgs.forEach(m => bubble(m[0] === 'in' ? 'inb' : 'out', m[1])); return; }
+  let paused = true;
+  new IntersectionObserver(e => paused = !e[0].isIntersecting).observe(body);
+  (async function run() {
+    while (true) for (const sc of scenes) {
+      while (paused) await sleep(300);
+      chEl.textContent = sc.ch; body.innerHTML = '';
+      for (const [who, txt] of sc.msgs) {
+        while (paused) await sleep(300);
+        await sleep(who === 'in' ? 650 : 450);
+        if (who === 'out') { const t = document.createElement('div'); t.className = 'bub out typing'; t.innerHTML = '<i></i><i></i><i></i>'; body.appendChild(t); await sleep(850); body.removeChild(t); }
+        bubble(who === 'in' ? 'inb' : 'out', txt);
+      }
+      await sleep(2200);
+    }
+  })();
+})();
+
+/* ---------- SOFTWARE: dashboard con chart vivo ---------- */
+(() => {
+  const chart = document.getElementById('dashChart');
+  if (!chart) return;
+  const bars = [];
+  for (let i = 0; i < 12; i++) { const b = document.createElement('div'); b.className = 'bar'; chart.appendChild(b); bars.push(b); }
+  const paint = () => bars.forEach((b, i) => b.style.height = (25 + Math.round(52 * Math.abs(Math.sin(i * .7))) + (reduce ? 0 : Math.round(Math.random() * 16))) + '%');
+  let started = false;
+  new IntersectionObserver(e => { if (e[0].isIntersecting && !started) { started = true; paint(); } }, { threshold: .35 }).observe(chart);
+  if (!reduce) setInterval(() => { if (started && !document.hidden) paint(); }, 1600);
+})();
+
+/* ---------- GROWTH: fábrica de contenido ---------- */
+(() => {
+  const feed = document.getElementById('facFeed');
+  if (!feed) return;
+  const items = [
+    ['📝', 'Post para Instagram', 'redes'], ['📰', 'Artículo SEO · 2,400 palabras', 'blog'],
+    ['🎬', 'Guion de reel', 'video'], ['✉️', 'Campaña de email', 'mailing'],
+    ['📣', 'Anuncio para Meta Ads', 'ads'], ['🔎', 'Keywords + meta títulos', 'SEO'],
+  ];
+  const add = it => { const el = document.createElement('div'); el.className = 'fac-item'; el.innerHTML = `<span class="fi-ico">${it[0]}</span><span class="fi-tx">${it[1]}</span><span class="fi-tag mono">✓ ${it[2]}</span>`; feed.appendChild(el); while (feed.children.length > 5) feed.removeChild(feed.firstChild); };
+  if (reduce) { items.slice(0, 5).forEach(add); return; }
+  items.slice(0, 3).forEach(add);
+  let i = 0, started = false;
+  new IntersectionObserver(e => started = e[0].isIntersecting).observe(feed);
+  setInterval(() => { if (started && !document.hidden) { add(items[i % items.length]); i++; } }, 1500);
 })();
